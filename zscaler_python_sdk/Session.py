@@ -73,7 +73,18 @@ class Session(object):
 			body,
 			self._set_header()
 		)
-		self.jsessionid = self._parse_jsessionid(res.headers['Set-Cookie'])        
+		self.jsessionid = self._parse_jsessionid(res.headers['Set-Cookie'])
+		return res
+
+
+	def _logout(self):
+
+		uri = self.api_url + 'api/v1/authenticatedSession'
+
+		res = self._perform_delete_request(
+			uri,
+			self._set_header()
+		)
 
 
 	def _handle_response(self, response, content):
@@ -102,7 +113,7 @@ class Session(object):
 		)
 
 		if res.content:
-			parsed = json.loads(res.content)
+			parsed = res.json()
 			json_response = json.dumps(parsed, sort_keys=True, indent=4, separators=(',', ': ')) if res.content else {}		
 		
 			if self.debug:
@@ -131,7 +142,7 @@ class Session(object):
 		)
 
 		if res.content:
-			parsed = json.loads(res.content)
+			parsed = res.json()
 			json_response = json.dumps(parsed, sort_keys=True, indent=4, separators=(',', ': ')) if res.content else {}
 
 			if self.debug:
@@ -160,7 +171,7 @@ class Session(object):
 		)
 
 		if res.content:
-			parsed = json.loads(res.content)
+			parsed = res.json()
 			json_response = json.dumps(parsed, sort_keys=True, indent=4, separators=(',', ': ')) if res.content else {}
 
 			if self.debug:

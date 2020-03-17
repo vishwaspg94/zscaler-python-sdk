@@ -75,7 +75,12 @@ class Auth(object):
 
 	def authenticate_partner_api(self):
 		self._set_obfuscateApiKey(self.partner_api_key)
-		self._get_jsessionid('partner')
+		res = self._get_jsessionid('partner')
+		return res
+
+
+	def logout(self):
+		self._logout()
 
 
 	def set_cloud(self, cloud):
@@ -87,4 +92,4 @@ class Auth(object):
 		else:
 			if self.debug:
 				logging.debug("CLOUD ERROD: {}".format("Unknwon Cloud"))				
-			return "Unknwon Cloud"		
+			return "Unknwon Cloud"
