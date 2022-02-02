@@ -34,6 +34,9 @@ class Auth(object):
 		# ZIA API Key should be stored as an environmental variable named "ZIA_API"
 		if os.environ.get('ZIA_API') is not None:
 			self.zia_api_key  = os.environ.get('ZIA_API')
+			if len(self.zia_api_key) < MIN_API_KEY_LENGTH:
+				logging.debug("ZIA API Key must be %{} characters".format(MIN_API_KEY_LENGTH))
+				exit()
 		else:
 			logging.debug("ENV IMPORT ERROR: {}".format("ZIA_API not found"))
 			exit()
@@ -47,24 +50,27 @@ class Auth(object):
 			self.debug = DEBUG_DEFAULT
 
 		# Partner username should be stored as an environmental variable named "PARTNER_USERNAME"
-		if os.environ.get('PARTNER_USERNAME') is not None:
-			self.partner_username = os.environ.get('PARTNER_USERNAME')
+		if os.environ.get('ZIA_PARTNER_USERNAME') is not None:
+			self.partner_username = os.environ.get('ZIA_PARTNER_USERNAME')
 		else:
-			logging.debug("ENV IMPORT ERROR: {}".format("PARTNER_USERNAME not found"))
+			logging.debug("ENV IMPORT ERROR: {}".format("ZIA_PARTNER_USERNAME not found"))
 			exit()
 
 		# Partner password should be stored as an environmental variable named "PARTNER_PASSWORD"
-		if os.environ.get('PARTNER_PASSWORD') is not None:
-			self.partner_password = os.environ.get('PARTNER_PASSWORD')
+		if os.environ.get('ZIA_PARTNER_PASSWORD') is not None:
+			self.partner_password = os.environ.get('ZIA_PARTNER_PASSWORD')
 		else:
-			logging.debug("ENV IMPORT ERROR: {}".format("PARTNER_PASSWORD not found"))
+			logging.debug("ENV IMPORT ERROR: {}".format("ZIA_PARTNER_PASSWORD not found"))
 			exit()
 
 		# Partner API Key should be stored as an environmental variable named "PARTNER_API"
-		if os.environ.get('PARTNER_API') is not None:
-			self.partner_api_key  = os.environ.get('PARTNER_API')
+		if os.environ.get('ZIA_PARTNER_API') is not None:
+			self.partner_api_key  = os.environ.get('ZIA_PARTNER_API')
+			if len(self.partner_api_key) < MIN_API_KEY_LENGTH:
+				logging.debug("Partner API Key must be %{} characters".format(MIN_API_KEY_LENGTH))
+				exit()
 		else:
-			logging.debug("ENV IMPORT ERROR: %{}".format("PARTNER_API not found"))
+			logging.debug("ENV IMPORT ERROR: %{}".format("ZIA_PARTNER_API not found"))
 			exit()
 
 
