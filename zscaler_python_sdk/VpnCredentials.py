@@ -10,7 +10,7 @@ class VpnCredentials(object):
 
 	def _randomize_psk(self):
 		
-		psk = ''.join(random.choices(string.ascii_letters + string.digits, k=MAX_PSK_LEN))
+		psk = ''.join(random.choices(string.ascii_letters + string.digits, k=MAX_PSK_LENGTH))
 		if self.debug:
 			logging.debug("RANDOM PSK: {} (PSK Length: {})".format(
 				psk,
@@ -21,15 +21,27 @@ class VpnCredentials(object):
 
 	def extract_vpn_credential_id(self, json_response):
 
-		data = json.loads(json_response)
+		data = json_response
 		if self.debug:
 			logging.debug("Extract VPN ID: {}".format(data['id']))
 		return data['id']
 
 
-	def get_vpn_credentials(self):
+	def get_vpn_credentials(self, page_size=1000, page_count=1):
 
-		uri = self.api_url + 'api/v1/vpnCredentials'
+		uri = self.api_url + f'api/v1/vpnCredentials?pageSize={page_size}&page={page_count}'
+
+		res = self._perform_get_request(
+			uri,
+			self._set_header(self.jsessionid)
+		)
+		return res
+
+
+	def get_unassociated_vpn_credentials(self, page_size=1000, page_count=1):
+
+		uri = self.api_url + \
+			  f'api/v1/vpnCredentials?includeOnlyWithoutLocation=true&pageSize={page_size}&page={page_count}'
 
 		res = self._perform_get_request(
 			uri,
@@ -109,7 +121,7 @@ class VpnCredentials(object):
 
 	def delete_vpn_credential_by_id(self, vpn_id):
 
-		uri = self.api_url + 'api/v1/vpnCredentials/' + vpn_id
+		uri = self.api_url + 'api/v1/vpnCredentials/' + str(vpn_id)
 
 		res = self._perform_delete_request(
 			uri,
