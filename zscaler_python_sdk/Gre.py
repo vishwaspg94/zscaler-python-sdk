@@ -148,5 +148,110 @@ class Gre(object):
             uri,
             self._set_header(self.jsessionid)
         )
-        return res           
+        return res
+
+    def validate_static_ip(self, static_ip, **data):
+
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
+        geoOverride = data.get('geoOverride')
+
+        uri = self.api_url + 'api/v1/staticIP/validate'
+
+        if not static_ip:
+            if self.debug:
+                logging.error("ERROR: {}".format("No IP Address Provided"))
+                return 'No IP Address Provided'
+
+        # To manually set geolocation of static IP the geoOverride parameter must be passed
+        # if not, then lat / long will be ignored.
+        if geoOverride == True:
+            if not latitude:
+                if self.debug:
+                    logging.error("ERROR: {}".format("No Latitude Provided"))
+                return 'No Latitude Provided'
+
+            if not longitude:
+                if self.debug:
+                    logging.error("ERROR: {}".format("No Longitude Provided"))
+                return 'No Longitude Provided'
+
+            body = {
+                'ipAddress' : static_ip,
+                'latitude'  : latitude,
+                'longitude' : longitude,
+                'geoOverride': geoOverride
+            }
+        else:
+            body = {
+                'ipAddress' : static_ip
+            }
+
+        res = self._perform_post_request(
+            uri,
+            body,
+            self._set_header(self.jsessionid)
+        )
+        return res
+
+    def get_static_ip(self, ip_address):
+
+        uri = '{}api/v1/staticIP?ipAddress={}'.format(
+            self.api_url, ip_address
+            )
+        res = self._perform_get_request(
+            uri,
+            self._set_header(self.jsessionid)
+        )
+        return res
+
+    def get_all_static_ip(self):
+        uri = '{}api/v1/staticIP'.format(
+            self.api_url
+        )
+        res = self._perform_get_request(
+            uri,
+            self._set_header(self.jsessionid)
+        )
+        return res
+
+    def delete_static_ip(self, ip_address):
+        resp = self.get_static_ip(ip_address)
+        static_id = None
+        res = resp.json()
+        if res:
+            static_id = res[0].get("id")
+
+        if not static_id:
+            return res
+
+        uri = '{}api/v1/staticIP/{}'.format(
+            self.api_url, static_id
+        )
+        res = self._perform_delete_request(
+            uri,
+            self._set_header(self.jsessionid)
+        )
+        return res
+
+    def delete_gre_tunnel(self, ip_address):
+        resp = self.get_all_gre_tunnels()
+        res = resp.json()
+        tunnel_id = None
+        if res:
+            for tunnel in res:
+                if tunnel.get("sourceIp") == ip_address:
+                    tunnel_id = tunnel.get("id")
+
+        if not tunnel_id:
+            return res
+
+        uri = '{}api/v1/greTunnels/{}'.format(
+            self.api_url, tunnel_id
+        )
+        res = self._perform_delete_request(
+            uri,
+            self._set_header(self.jsessionid)
+        )
+        return res
         
