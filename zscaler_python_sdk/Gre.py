@@ -231,33 +231,7 @@ class Gre(object):
         )
         return res
 
-    def delete_gre_tunnel(self, ip_address):
-        z_gre_tunnels = []
-
-        page_count = 1
-        page_size = 1000
-        while True:
-            res = self.get_all_gre_tunnels(page_size=page_size, page_count=page_count)
-            if res:
-                gre_tunnels = res.json()
-                if not gre_tunnels:
-                    break
-
-                z_gre_tunnels += gre_tunnels
-                if len(gre_tunnels) < page_size:
-                    break
-
-            page_count += 1
-
-        tunnel_id = None
-        if z_gre_tunnels:
-            for tunnel in z_gre_tunnels:
-                if tunnel.get("sourceIp") == ip_address:
-                    tunnel_id = tunnel.get("id")
-
-        if not tunnel_id:
-            return z_gre_tunnels
-
+    def delete_gre_tunnel(self, tunnel_id):
         uri = '{}api/v1/greTunnels/{}'.format(
             self.api_url, tunnel_id
         )
