@@ -6,11 +6,9 @@ from .Defaults import *
 class Gre(object):
     
     
-    def get_all_gre_tunnels(self):
+    def get_all_gre_tunnels(self, page_size=1000, page_count=1):
 
-        uri = '{}api/v1/greTunnels'.format(
-            self.api_url,
-            )
+        uri = self.api_url + f'api/v1/greTunnels?pageSize={page_size}&page={page_count}'
 
         res = self._perform_get_request(
             uri,
@@ -205,10 +203,9 @@ class Gre(object):
         )
         return res
 
-    def get_all_static_ip(self):
-        uri = '{}api/v1/staticIP'.format(
-            self.api_url
-        )
+    def get_all_static_ip(self, page_size=1000, page_count=1):
+        uri = self.api_url + f'api/v1/staticIP?pageSize={page_size}&page={page_count}'
+
         res = self._perform_get_request(
             uri,
             self._set_header(self.jsessionid)
@@ -235,16 +232,31 @@ class Gre(object):
         return res
 
     def delete_gre_tunnel(self, ip_address):
-        resp = self.get_all_gre_tunnels()
-        res = resp.json()
+        z_gre_tunnels = []
+
+        page_count = 1
+        page_size = 1000
+        while True:
+            res = self.get_all_gre_tunnels(page_size=page_size, page_count=page_count)
+            if res:
+                gre_tunnels = res.json()
+                if not gre_tunnels:
+                    break
+
+                z_gre_tunnels += gre_tunnels
+                if len(gre_tunnels) < page_size:
+                    break
+
+            page_count += 1
+
         tunnel_id = None
-        if res:
-            for tunnel in res:
+        if z_gre_tunnels:
+            for tunnel in z_gre_tunnels:
                 if tunnel.get("sourceIp") == ip_address:
                     tunnel_id = tunnel.get("id")
 
         if not tunnel_id:
-            return res
+            return z_gre_tunnels
 
         uri = '{}api/v1/greTunnels/{}'.format(
             self.api_url, tunnel_id
