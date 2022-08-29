@@ -240,4 +240,25 @@ class Gre(object):
             self._set_header(self.jsessionid)
         )
         return res
-        
+
+    def modify_gre_tunnel(self, tunnel_id, body, comment="", ipUnnumbered=True, domesticPreference=False):
+        uri = '{}api/v1/greTunnels/{}'.format(
+            self.api_url, tunnel_id
+        )
+
+        if not tunnel_id:
+            if self.debug:
+                logging.error("ERROR: {}".format("No GRE tunnel id Provided"))
+            return 'No GRE tunnel ID Provided'
+
+        if not body:
+            if self.debug:
+                logging.error("ERROR: {}".format("No tunnel data Provided"))
+            return 'No tunnel data provided'
+
+        res = self._perform_put_request(
+            uri,
+            body,
+            self._set_header(self.jsessionid)
+        )
+        return res
