@@ -53,25 +53,31 @@ class Auth(object):
 		if os.environ.get('ZIA_PARTNER_USERNAME') is not None:
 			self.partner_username = os.environ.get('ZIA_PARTNER_USERNAME')
 		else:
-			logging.debug("ENV IMPORT ERROR: {}".format("ZIA_PARTNER_USERNAME not found"))
-			exit()
+			err_str = "ENV IMPORT ERROR: {}".format("ZIA_PARTNER_USERNAME not found")
+			logging.debug(err_str)
+
 
 		# Partner password should be stored as an environmental variable named "PARTNER_PASSWORD"
 		if os.environ.get('ZIA_PARTNER_PASSWORD') is not None:
 			self.partner_password = os.environ.get('ZIA_PARTNER_PASSWORD')
 		else:
-			logging.debug("ENV IMPORT ERROR: {}".format("ZIA_PARTNER_PASSWORD not found"))
-			exit()
+			err_str = "ENV IMPORT ERROR: {}".format("ZIA_PARTNER_PASSWORD not found")
+			logging.debug(err_str)
+			return False, err_str
 
 		# Partner API Key should be stored as an environmental variable named "PARTNER_API"
 		if os.environ.get('ZIA_PARTNER_API') is not None:
 			self.partner_api_key  = os.environ.get('ZIA_PARTNER_API')
 			if len(self.partner_api_key) < MIN_API_KEY_LENGTH:
-				logging.debug("Partner API Key must be %{} characters".format(MIN_API_KEY_LENGTH))
-				exit()
+				err_str = "Partner API Key must be %{} characters".format(MIN_API_KEY_LENGTH)
+				logging.debug(err_str)
+				return False, err_str
 		else:
-			logging.debug("ENV IMPORT ERROR: %{}".format("ZIA_PARTNER_API not found"))
-			exit()
+			err_str = "ENV IMPORT ERROR: %{}".format("ZIA_PARTNER_API not found")
+			logging.debug(err_str)
+			return False, err_str
+
+		return True, None
 
 
 	def authenticate_zia_api(self):
