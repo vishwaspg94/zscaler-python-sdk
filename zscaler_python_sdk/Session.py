@@ -169,8 +169,9 @@ class Session(object):
 			if res.content.decode('utf-8') == "SESSION_NOT_VALID":
 				self._set_obfuscateApiKey(self.partner_api_key)
 				self._get_jsessionid('partner')
-				res = self.session.get(
+				res = self.session.post(
 					uri,
+					json=body,
 					headers=self._set_header(self.jsessionid),
 					timeout=REQUEST_TIMEOUTS
 				)
@@ -208,8 +209,9 @@ class Session(object):
 			if res.content.decode('utf-8') == "SESSION_NOT_VALID":
 				self._set_obfuscateApiKey(self.partner_api_key)
 				self._get_jsessionid('partner')
-				res = self.session.get(
+				res = self.session.put(
 					uri,
+					json=body,
 					headers=self._set_header(self.jsessionid),
 					timeout=REQUEST_TIMEOUTS
 				)
@@ -238,7 +240,7 @@ class Session(object):
 			if res.content.decode('utf-8') == "SESSION_NOT_VALID":
 				self._set_obfuscateApiKey(self.partner_api_key)
 				self._get_jsessionid('partner')
-				res = self.session.get(
+				res = self.session.delete(
 					uri,
 					headers=self._set_header(self.jsessionid),
 					timeout=REQUEST_TIMEOUTS
