@@ -1,5 +1,6 @@
 
 import json
+import os
 import time
 import platform
 import re
@@ -127,6 +128,14 @@ class Session(object):
 		)
 
 		if res.content:
+			if res.content.decode('utf-8') == "SESSION_NOT_VALID":
+				self._set_obfuscateApiKey(self.partner_api_key)
+				self._get_jsessionid('partner')
+				res = self.session.get(
+					uri,
+					headers=self._set_header(self.jsessionid),
+					timeout=REQUEST_TIMEOUTS
+				)
 			parsed = res.json()
 			json_response = json.dumps(parsed, sort_keys=True, indent=4, separators=(',', ': ')) if res.content else {}		
 		
@@ -157,6 +166,14 @@ class Session(object):
 		)
 
 		if res.content:
+			if res.content.decode('utf-8') == "SESSION_NOT_VALID":
+				self._set_obfuscateApiKey(self.partner_api_key)
+				self._get_jsessionid('partner')
+				res = self.session.get(
+					uri,
+					headers=self._set_header(self.jsessionid),
+					timeout=REQUEST_TIMEOUTS
+				)
 			try:
 				parsed = json.loads(res.content)
 				json_response = json.dumps(parsed, sort_keys=True, indent=4, separators=(',', ': ')) if res.content else {}
@@ -188,6 +205,14 @@ class Session(object):
 		)
 
 		if res.content:
+			if res.content.decode('utf-8') == "SESSION_NOT_VALID":
+				self._set_obfuscateApiKey(self.partner_api_key)
+				self._get_jsessionid('partner')
+				res = self.session.get(
+					uri,
+					headers=self._set_header(self.jsessionid),
+					timeout=REQUEST_TIMEOUTS
+				)
 			parsed = res.json()
 			json_response = json.dumps(parsed, sort_keys=True, indent=4, separators=(',', ': ')) if res.content else {}
 
@@ -210,6 +235,14 @@ class Session(object):
 		)	
 
 		if res.content:
+			if res.content.decode('utf-8') == "SESSION_NOT_VALID":
+				self._set_obfuscateApiKey(self.partner_api_key)
+				self._get_jsessionid('partner')
+				res = self.session.get(
+					uri,
+					headers=self._set_header(self.jsessionid),
+					timeout=REQUEST_TIMEOUTS
+				)
 			if self.debug:
 				logging.debug("DELETE METHOD (URI): {}, HEADERS: {}".format(
 					uri,
