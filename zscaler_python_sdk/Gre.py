@@ -16,6 +16,14 @@ class Gre(object):
         )
         return res
         
+    def get_gre_tunnel(self, tunnel_id):
+        uri = self.api_url + f'api/v1/greTunnels/{tunnel_id}'
+
+        res = self._perform_get_request(
+            uri,
+            self._set_header(self.jsessionid)
+        )
+        return res
 
     def get_all_gre_vips(self):
 
